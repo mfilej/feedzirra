@@ -224,10 +224,10 @@ module Feedzirra
               feed.etag = etag_from_header(c.header_str)
               feed.last_modified = last_modified_from_header(c.header_str)
               responses[url] = feed
-              options[:on_success].call(url, feed) if options.has_key?(:on_success)
             rescue Exception => e
               options[:on_failure].call(url, c.response_code, c.header_str, c.body_str) if options.has_key?(:on_failure)
             end
+            options[:on_success].call(url, feed) if options.has_key?(:on_success)
           else
             # puts "Error determining parser for #{url} - #{c.last_effective_url}"
             # raise NoParserAvailable.new("no valid parser for content.") (this would unfirtunately fail the whole 'multi', so it's not really useable)
@@ -278,10 +278,10 @@ module Feedzirra
             updated_feed.last_modified = last_modified_from_header(c.header_str)
             feed.update_from_feed(updated_feed)
             responses[feed.feed_url] = feed
-            options[:on_success].call(feed) if options.has_key?(:on_success)
           rescue Exception => e
             options[:on_failure].call(feed, c.response_code, c.header_str, c.body_str) if options.has_key?(:on_failure)
           end
+          options[:on_success].call(feed) if options.has_key?(:on_success)
         end
 
         curl.on_failure do |c, err|
